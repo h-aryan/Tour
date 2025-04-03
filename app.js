@@ -8,10 +8,22 @@ const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
 );
 
+app.use((req, res, next) => {
+  console.log("Hello from the middleware!");
+  next(); // Call next() to pass control to the next middleware function
+});
+
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  next();
+});
+
 ///GET FOR ALL TOURS
 app.get("/api/v1/tours", (req, res) => {
+  console.log(req.requestTime);
   res.status(200).json({
     status: "success",
+    requestedAT: req.requestTime,
     results: tours.length,
     data: {
       tours,
@@ -48,6 +60,7 @@ app.post("/api/v1/tours", (req, res) => {
     JSON.stringify(tours),
     (err) => {
       res.status(201).json({
+        //201 means created
         status: "success",
         data: {
           tour: newTour,
@@ -75,11 +88,13 @@ app.patch("/api/v1/tours/:id", (req, res) => {
 app.delete("/api/v1/tours/:id", (req, res) => {
   if (req.params.id * 1 > tours.length) {
     return res.status(404).json({
+      //
       status: "Fail",
       message: "Invalid ID",
     });
   }
   res.status(204).json({
+    // 204 means no content
     status: "success",
     data: null,
   });
