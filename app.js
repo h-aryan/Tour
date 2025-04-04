@@ -22,8 +22,7 @@ app.use((req, res, next) => {
 });
 
 ///GET FOR ALL TOURS
-app.get("/api/v1/tours", (req, res) => {
-  console.log(req.requestTime);
+const getAllTours = (req, res) => {
   res.status(200).json({
     status: "success",
     requestedAT: req.requestTime,
@@ -32,11 +31,11 @@ app.get("/api/v1/tours", (req, res) => {
       tours,
     },
   });
-});
+};
 
 ///GET FOR A TOUR BY ID
 
-app.get("/api/v1/tours/:id", (req, res) => {
+const getTour = (req, res) => {
   const id = req.params.id * 1;
   if (id > tours.length) {
     return res.status(404).json({
@@ -51,9 +50,9 @@ app.get("/api/v1/tours/:id", (req, res) => {
       tour,
     },
   });
-});
+};
 
-app.post("/api/v1/tours", (req, res) => {
+const newTour = (req, res) => {
   const newId = tours[tours.length - 1].id + 1;
   const newTour = Object.assign({ id: newId }, req.body);
   tours.push(newTour);
@@ -71,9 +70,9 @@ app.post("/api/v1/tours", (req, res) => {
       });
     }
   );
-});
+};
 
-app.patch("/api/v1/tours/:id", (req, res) => {
+const updateTour = (req, res) => {
   if (req.params.id * 1 > tours.length) {
     return res.status(404).json({
       status: "Fail",
@@ -86,9 +85,9 @@ app.patch("/api/v1/tours/:id", (req, res) => {
       tour: "<Updated tour here...>",
     },
   });
-});
+};
 
-app.delete("/api/v1/tours/:id", (req, res) => {
+const deleteTour = (req, res) => {
   if (req.params.id * 1 > tours.length) {
     return res.status(404).json({
       //
@@ -101,7 +100,14 @@ app.delete("/api/v1/tours/:id", (req, res) => {
     status: "success",
     data: null,
   });
-});
+};
+
+app.route("/api/v1/tours").get(getAllTours).post(newTour);
+app
+  .route("/api/v1/tours/:id")
+  .get(getTour)
+  .patch(updateTour)
+  .delete(deleteTour);
 
 const PORT = 3000;
 app.listen(PORT, () => {
