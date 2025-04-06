@@ -19,7 +19,6 @@ app.use((req, res, next) => {
   next();
 });
 
-//Mounting the Routers have to done these variables
 app.use("/api/v1/tours", tourRouter);
 app.use("/api/v1/users", userRouter);
 
