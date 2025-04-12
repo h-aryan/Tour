@@ -1,3 +1,4 @@
+const { diff } = require("semver");
 const Tour = require("./../model/tourModel");
 
 /*const tours = JSON.parse(
@@ -7,7 +8,16 @@ const Tour = require("./../model/tourModel");
 
 exports.getAllTours = async (req, res) => {
   try {
-    const tours = await Tour.find();
+    //BUILD QUERY
+    const queryObj = { ...req.query };
+    const excludedFields = ["page", "sort", "limit", "fields"];
+    excludedFields.forEach((el) => delete queryObj[el]);
+
+    console.log(req.query);
+    const query = await Tour.find({ queryObj });
+    //EXECUTE QUERY
+    const tours = await query;
+    //SEND RESPONSE
     res.status(200).json({
       status: "success",
       requestedAT: req.requestTime,
