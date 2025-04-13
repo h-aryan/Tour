@@ -6,6 +6,8 @@ router
   .route("/")
   .get(tourController.getAllTours)
   .post(tourController.createTour);
+
+router.route("/tour-stats").get(tourController.tourStats);
 router
   .route("/:id")
   .get(tourController.getTour)
