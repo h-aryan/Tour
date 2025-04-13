@@ -8,6 +8,7 @@ router
   .post(tourController.createTour);
 
 router.route("/tour-stats").get(tourController.tourStats);
+router.route("/monthly-plan/:year").get(tourController.getMonthlyPlan);
 router
   .route("/:id")
   .get(tourController.getTour)
