@@ -1,5 +1,7 @@
 const express = require("express");
 const app = express();
+const AppError = require("./utils/appError");
+const globalErrorHandler = require("./controllers/errorController");
 
 const morgan = require("morgan");
 
@@ -23,21 +25,10 @@ app.use("/api/v1/tours", tourRouter);
 app.use("/api/v1/users", userRouter);
 
 app.get(/(.*)/, (req, res, next) => {
-  res.status(404).json({
-    status: "fail",
-    message: `Route not found on this ${req.originalUrl} server!`,
-  });
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
 //Global error handling middleware
 // It catches any errors that occur in the application and sends a response to the client
-app.use((err, req, res, next) => {
-  err.statusCode = err.statusCode || 500;
-  err.status = err.status || "error";
-  res.status(err.statusCode).json({
-    status: err.status,
-    message: err.message,
-  });
-});
-
+app.use(globalErrorHandler);
 module.exports = app;
