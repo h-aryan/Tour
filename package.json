@@ -105,7 +105,8 @@
   },
   "scripts": {
     "start": "nodemon server.js",
-    "debug": "ndb server.js"
+    "debug": "ndb server.js",
+    "start:prod": "cross-env NODE_ENV=production nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -119,6 +120,7 @@
   "homepage": "https://github.com/h-aryan/Tour#readme",
   "description": "",
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "ndb": "^1.1.5"
   }
 }

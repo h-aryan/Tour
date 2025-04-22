@@ -1,7 +1,6 @@
 const express = require("express");
 const app = express();
 const AppError = require("./utils/appError");
-const globalErrorHandler = require("./controllers/errorController");
 
 const morgan = require("morgan");
 
@@ -30,5 +29,6 @@ app.get(/(.*)/, (req, res, next) => {
 
 //Global error handling middleware
 // It catches any errors that occur in the application and sends a response to the client
+const globalErrorHandler = require("./controllers/errorController");
 app.use(globalErrorHandler);
 module.exports = app;
