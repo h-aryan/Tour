@@ -1,10 +1,13 @@
 const express = require("express");
 const tourController = require("./../controllers/tourController");
 const router = express.Router();
+const authController = require("./../controllers/authController");
 
 router
   .route("/")
-  .get(tourController.getAllTours)
+  //the auth controller will run first to see if the user is logged in or not
+  //if the user is logged in, then the tour controller will run to get all tours
+  .get(authController.protect, tourController.getAllTours)
   .post(tourController.createTour);
 
 router.route("/tour-stats").get(tourController.tourStats);
