@@ -1,7 +1,17 @@
-exports.getAllUsers = (req, res) => {
-  res.status(500).json({
-    status: "error",
-    message: "This route is not yet defined!",
+const User = require("./../model/userModel");
+const APIFeatures = require("./../utils/apiFeatures");
+const AppError = require("./../utils/appError");
+
+exports.getAllUsers = async (req, res) => {
+  const users = await User.find();
+  //SEND RESPONSE
+  res.status(200).json({
+    status: "success",
+    requestedAT: req.requestTime,
+    results: users.length,
+    data: {
+      users,
+    },
   });
 };
 
