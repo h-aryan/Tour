@@ -1,3 +1,4 @@
+const { promisify } = require("util");
 const User = require("../model/userModel");
 const jwt = require("jsonwebtoken");
 const AppError = require("./../utils/appError");
@@ -75,7 +76,7 @@ exports.protect = async (req, res, next) => {
   }
 
   //2) Verification token
-  const decoded = await jwt.verify(token, process.env.JWT_SECRET);
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
   //3) Check if user still exists
   const currentUser = await User.findById(decoded.id);
   if (!currentUser) {
