@@ -1,6 +1,6 @@
 const { pathToRegexp } = require("path-to-regexp");
 const Tour = require("./../model/tourModel");
-const APIFeatures = require("./../utils/apiFeatures");
+
 const AppError = require("./../utils/appError");
 const factory = require("./handlerFactory");
 
@@ -9,75 +9,10 @@ const factory = require("./handlerFactory");
   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
 );*/
 
-exports.getAllTours = async (req, res) => {
-  try {
-    console.log(req.query);
-
-    //EXECUTE QUERY
-    const features = new APIFeatures(Tour.find(), req.query)
-      .filter()
-      .sort()
-      .limitFields()
-      .paginate();
-
-    const tours = await features.query;
-    //SEND RESPONSE
-    res.status(200).json({
-      status: "success",
-      requestedAT: req.requestTime,
-      results: tours.length,
-      data: {
-        tours,
-      },
-    });
-  } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err.message || "Tour not found",
-    });
-  }
-};
-
-exports.getTour = async (req, res, next) => {
-  try {
-    const tour = await Tour.findById(req.params.id).populate("reviews");
-
-    /*if (id > tours.length) {
-    return res.status(404).json({
-      status: "Fail",
-      message: "Invalid ID",
-    });
-  }
-  const tour = tours.find((el) => el.id == = id);*/
-
-    if (!tour) {
-      return next(new AppError("Tour not found", 404));
-    }
-
-    res.status(200).json({
-      status: "success",
-      data: {
-        tour,
-      },
-    });
-  } catch (err) {
-    next(err);
-  }
-};
-
-exports.createTour = async (req, res, next) => {
-  try {
-    const newTour = await Tour.create(req.body);
-    res.status(201).json({
-      status: "success",
-      data: {
-        tour: newTour,
-      },
-    });
-  } catch (err) {
-    next(err);
-  }
-  /*const newId = tours[tours.length - 1].id + 1;
+exports.getAllTours = factory.getAll(Tour);
+exports.getTour = factory.getOne(Tour, { path: "reviews" });
+exports.createTour = factory.createOne(Tour);
+/*const newId = tours[tours.length - 1].id + 1;
   const newTour = Object.assign({ id: newId }, req.body);
   tours.push(newTour);
 
@@ -94,7 +29,6 @@ exports.createTour = async (req, res, next) => {
       });
     }
   );*/
-};
 
 exports.updateTour = factory.updateOne(Tour);
 /*if (req.params.id * 1 > tours.length) {
