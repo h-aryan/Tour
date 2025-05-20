@@ -2,6 +2,7 @@ const { pathToRegexp } = require("path-to-regexp");
 const Tour = require("./../model/tourModel");
 const APIFeatures = require("./../utils/apiFeatures");
 const AppError = require("./../utils/appError");
+const factory = require("./handlerFactory");
 
 /*const tours = JSON.parse(
   ////// ARRAY of Tours //////
@@ -95,25 +96,8 @@ exports.createTour = async (req, res, next) => {
   );*/
 };
 
-exports.updateTour = async (req, res, next) => {
-  try {
-    const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-    if (!tour) {
-      return next(new AppError("Tour not found", 404));
-    }
-    res.status(200).json({
-      status: "success",
-      data: {
-        tour,
-      },
-    });
-  } catch (err) {
-    next(err);
-  }
-  /*if (req.params.id * 1 > tours.length) {
+exports.updateTour = factory.updateOne(Tour);
+/*if (req.params.id * 1 > tours.length) {
     return res.status(404).json({
       status: "Fail",
       message: "Invalid ID",
@@ -125,9 +109,10 @@ exports.updateTour = async (req, res, next) => {
       tour: "<Updated tour here...>",
     },
   });*/
-};
 
-exports.deleteTour = async (req, res) => {
+exports.deleteTour = factory.deleteOne(Tour);
+
+/*exports.deleteTour = async (req, res) => {
   try {
     const tour = await Tour.findByIdAndDelete(req.params.id);
     if (!tour) {
@@ -154,8 +139,8 @@ exports.deleteTour = async (req, res) => {
     // 204 means no content
     status: "success",
     data: null,
-  });*/
-};
+  });
+};*/
 
 exports.tourStats = async (req, res) => {
   try {

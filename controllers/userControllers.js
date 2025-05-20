@@ -1,6 +1,7 @@
 const User = require("./../model/userModel");
 const APIFeatures = require("./../utils/apiFeatures");
 const AppError = require("./../utils/appError");
+const factory = require("./handlerFactory");
 
 exports.getAllUsers = async (req, res) => {
   const users = await User.find();
@@ -29,16 +30,6 @@ exports.getUser = (req, res) => {
   });
 };
 
-exports.updateUser = (req, res) => {
-  res.status(500).json({
-    status: "error",
-    message: "This route is not yet defined!",
-  });
-};
+exports.updateUser = factory.updateOne(User);
 
-exports.deleteUser = (req, res) => {
-  res.status(500).json({
-    status: "error",
-    message: "This route is not yet defined!",
-  });
-};
+exports.deleteUser = factory.deleteOne(User);
