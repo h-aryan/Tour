@@ -118,6 +118,10 @@ const tourSchema = new mongoose.Schema(
   }
 );
 
+tourSchema.index({ price: 1, ratingAverage: -1 }); //compound index
+tourSchema.index({ slug: 1 });
+tourSchema.index({ startLocation: "2dsphere" }); //geospatial index
+
 tourSchema.virtual("durationWeeks").get(function () {
   return this.duration / 7;
 });
@@ -159,11 +163,11 @@ tourSchema.pre(/^find/, function (next) {
   next(); //fills the guides field with the actual user data
 });
 // AGGREGATION MIDDLEWARE
-tourSchema.pre("aggregate", function (next) {
+/*tourSchema.pre("aggregate", function (next) {
   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
   console.log(this.pipeline());
   next();
-});
+});*/
 
 const Tour = mongoose.model("Tour", tourSchema, "tour");
 module.exports = Tour;
