@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");
 const app = express();
 const rateLimit = require("express-rate-limit");
@@ -12,7 +13,9 @@ const reviewRouter = require("./routes/reviewRoutes");
 
 app.use(express.json());
 app.use(morgan("dev"));
-app.use(express.static(`${__dirname}/public`)); // Serve static files from the public directory
+app.set("view engine", "pug"); // Set Pug as the view engine
+app.set("views", path.join(__dirname, "views"));
+app.use(express.static(path.join(__dirname, "public"))); // Serve static files from the public directory
 //RATE LIMITER
 const limiter = rateLimit({
   max: 100, // Limit each IP to 100 requests per windowMs
@@ -45,6 +48,15 @@ app.use(
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
+});
+
+// Define a simple route for the home page
+app.get("/", (req, res) => {
+  res.status(200).render("base", {
+    tour: "tours",
+    title: "Home Page",
+    message: "Welcome to the Home Page!",
+  });
 });
 
 app.use("/api/v1/tours", tourRouter);
