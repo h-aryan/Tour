@@ -127,7 +127,9 @@
   "homepage": "https://github.com/h-aryan/Tour#readme",
   "description": "",
   "devDependencies": {
+    "@prettier/plugin-pug": "^3.4.0",
     "cross-env": "^7.0.3",
-    "ndb": "^1.1.5"
+    "ndb": "^1.1.5",
+    "prettier": "^3.5.3"
   }
 }
