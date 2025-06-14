@@ -14,7 +14,7 @@ exports.getOverview = async (req, res, next) => {
 };
 
 exports.getTour = async (req, res) => {
-  const tour = await Tour.findById(req.params.id).populate({
+  const tour = await Tour.findOne({ _id: req.params.id }).populate({
     path: "reviews",
     fields: "review rating user",
   });
