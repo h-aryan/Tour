@@ -1,50 +1,51 @@
-/* eslint-disable */
-import keys from "../../config/keys";
+console.log("maptiler.js loaded ✅");
 
-export const displayMap = locations => {
-  mapboxgl.accessToken = keys.mapBoxAccessToken;
-  var map = new mapboxgl.Map({
+document.addEventListener("DOMContentLoaded", function () {
+  const mapBox = document.getElementById("map");
+  if (!mapBox) return;
+
+  const locations = JSON.parse(mapBox.dataset.locations);
+  console.log("Parsed locations:", locations);
+
+  // ✅ Set the MapTiler API key
+  maptilersdk.config.apiKey = "UX2b0HMn9kmKv4uz6hMN"; // Replace with your real key
+
+  const map = new maptilersdk.Map({
     container: "map",
-    style: "mapbox://styles/rasedmia/ck3cmgrsx1qa61cpiuonp0dja",
-    scrollZoom: false
-    // center: [-118.113491, 34.111745],
-    // zoom: 10,
-    // interactive: false
+    style: maptilersdk.MapStyle.STREETS, // Or use your custom style URL
+    scrollZoom: false,
+    zoom: 2,
   });
 
-  const bounds = new mapboxgl.LngLatBounds();
+  const bounds = new maptilersdk.LngLatBounds();
 
-  locations.forEach(loc => {
-    // Create marker
+  locations.forEach((loc) => {
     const el = document.createElement("div");
     el.className = "marker";
+    el.style.backgroundColor = "#28b485";
+    el.style.width = "20px";
+    el.style.height = "20px";
+    el.style.borderRadius = "50%";
 
-    // Add marker
-    new mapboxgl.Marker({
+    new maptilersdk.Marker({
       element: el,
-      anchor: "bottom"
+      anchor: "bottom",
     })
       .setLngLat(loc.coordinates)
+      .setPopup(
+        new maptilersdk.Popup().setText(`${loc.description} - Day ${loc.day}`)
+      )
       .addTo(map);
 
-    // Add popup
-    new mapboxgl.Popup({
-      offset: 30
-    })
-      .setLngLat(loc.coordinates)
-      .setHTML(`<p>Day ${loc.day}: ${loc.description}</p>`)
-      .addTo(map);
-
-    // Extend map bounds to include current location
     bounds.extend(loc.coordinates);
   });
 
   map.fitBounds(bounds, {
     padding: {
-      top: 200,
-      bottom: 150,
+      top: 100,
+      bottom: 100,
       left: 100,
-      right: 100
-    }
+      right: 100,
+    },
   });
-};
+});

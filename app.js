@@ -14,25 +14,31 @@ const viewRouter = require("./routes/viewRoutes");
 
 app.use(express.json());
 app.use(morgan("dev"));
-app.set("view engine", "pug"); // Set Pug as the view engine
+app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
-app.use(express.static(path.join(__dirname, "public"))); // Serve static files from the public directory
-//RATE LIMITER
+app.use(express.static(path.join(__dirname, "public"))); // Serve static files from "public"
+
+// Rate limiter middleware
 const limiter = rateLimit({
-  max: 100, // Limit each IP to 100 requests per windowMs
-  windowMs: 60 * 60 * 1000, // 1 hour in milliseconds
+  max: 100,
+  windowMs: 60 * 60 * 1000,
   message: "Too many requests from this IP, please try again in an hour!",
 });
+app.use("/api", limiter);
 
-app.use("/api", limiter); // Apply the rate limiting middleware to all requests to /api
+// Helmet for security headers
+app.use(helmet());
 
-app.use(helmet()); // Set security HTTP headers
-
+// Allow inline scripts/styles and allow content from MapTiler CDN
 app.use((req, res, next) => {
-  console.log("Hello from the middleware!");
-  next(); // Call next() to pass control to the next middleware function
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'self'; script-src 'self' https://cdn.maptiler.com blob:; style-src 'self' 'unsafe-inline' https://cdn.maptiler.com; img-src 'self' data: https://cdn.maptiler.com https://api.maptiler.com; connect-src 'self' https://cdn.maptiler.com https://api.maptiler.com;"
+  );
+  next();
 });
 
+// HTTP Parameter Pollution protection
 app.use(
   hpp({
     whitelist: [
@@ -42,27 +48,29 @@ app.use(
       "maxGroupSize",
       "difficulty",
       "price",
-    ], // Whitelist of query parameters to allow HTTP parameter pollution
+    ],
   })
-); // Prevent HTTP parameter pollution
+);
 
+// Add request timestamp
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
 });
 
-// Define a simple route for the home page
-app.use("/", viewRouter); // Use the viewRouter for rendering views
+// View routes and API routes
+app.use("/", viewRouter);
 app.use("/api/v1/tours", tourRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/reviews", reviewRouter);
 
+// Catch all unhandled routes
 app.get(/(.*)/, (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
-//Global error handling middleware
-// It catches any errors that occur in the application and sends a response to the client
+// Global error handler
 const globalErrorHandler = require("./controllers/errorController");
 app.use(globalErrorHandler);
+
 module.exports = app;
