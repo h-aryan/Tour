@@ -14,13 +14,33 @@ exports.getOverview = async (req, res, next) => {
 };
 
 exports.getTour = async (req, res) => {
-  const tour = await Tour.findOne({ _id: req.params.id }).populate({
-    path: "reviews",
-    fields: "review rating user",
-  });
+  try {
+    const tour = await Tour.findById(req.params.id)
+      .populate({
+        path: "reviews",
+        populate: { path: "user", select: "name photo" },
+        select: "review rating user",
+      })
+      .populate({
+        path: "guides",
+        select: "name photo role",
+      });
 
-  res.status(200).render("tour", {
-    title: "The Forest Hiker",
-    tour,
-  });
+    if (!tour) {
+      return res.status(404).render("error", {
+        title: "Tour not found",
+        message: "No tour found with that ID.",
+      });
+    }
+
+    res.status(200).render("tour", {
+      title: tour.name,
+      tour,
+    });
+  } catch (err) {
+    res.status(500).render("error", {
+      title: "Error",
+      message: err.message || "Something went wrong.",
+    });
+  }
 };
