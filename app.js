@@ -28,6 +28,7 @@ const limiter = rateLimit({
 app.use("/api", limiter);
 
 app.use(cookieParser());
+app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 
 app.use(helmet());
 

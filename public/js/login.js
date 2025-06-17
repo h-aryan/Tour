@@ -44,6 +44,29 @@ const logout = async () => {
   }
 };
 
+const updatePassword = async (passwordCurrent, password, passwordConfirm) => {
+  try {
+    const res = await axios({
+      method: "POST",
+      url: "/update-password",
+      data: {
+        passwordCurrent,
+        password,
+        passwordConfirm,
+      },
+    });
+
+    if (res.data.status === "success") {
+      alert("Password updated successfully! Redirecting to home page...");
+      window.setTimeout(() => {
+        location.assign("/"); // Redirect to home page
+      }, 1500);
+    }
+  } catch (err) {
+    alert(err.response.data.message);
+  }
+};
+
 const loginForm = document.querySelector(".login-form");
 if (loginForm) {
   loginForm.addEventListener("submit", (e) => {
@@ -61,3 +84,14 @@ if (logoutButton) {
     logout();
   });
 }
+
+document
+  .querySelector(".form-user-settings")
+  .addEventListener("submit", (e) => {
+    e.preventDefault();
+    const passwordCurrent = document.querySelector("#password-current").value;
+    const password = document.querySelector("#password").value;
+    const passwordConfirm = document.querySelector("#password-confirm").value;
+
+    updatePassword(passwordCurrent, password, passwordConfirm);
+  });

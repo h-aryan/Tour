@@ -1,4 +1,5 @@
 const Tour = require("../model/tourModel");
+const User = require("../model/userModel");
 
 exports.getOverview = async (req, res, next) => {
   // 1) Get all tours from the database (mocked here)
@@ -53,8 +54,39 @@ exports.getLoginForm = (req, res) => {
 };
 
 exports.getAccount = (req, res) => {
+  console.log("User data:", res.locals.user); // Debugging
   res.status(200).render("account", {
     title: "Your account",
-    user: req.user,
+    user: res.locals.user, // Pass user data to the template
   });
+};
+
+exports.updateUserData = async (req, res) => {
+  try {
+    console.log("Request body:", req.body); // Debugging
+    console.log("User ID:", req.user.id); // Debugging
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        name: req.body.name,
+        email: req.body.email,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    res.status(200).render("account", {
+      title: "Your account",
+      user: updatedUser,
+    });
+  } catch (err) {
+    console.error(err); // Debugging
+    res.status(400).render("error", {
+      title: "Error updating account",
+      message: err.message || "Something went wrong.",
+    });
+  }
 };
