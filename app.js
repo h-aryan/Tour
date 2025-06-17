@@ -6,6 +6,7 @@ const helmet = require("helmet");
 const AppError = require("./utils/appError");
 const hpp = require("hpp");
 const morgan = require("morgan");
+const cookieParser = require("cookie-parser");
 
 const tourRouter = require("./routes/tourRoutes");
 const userRouter = require("./routes/userRoutes");
@@ -26,14 +27,14 @@ const limiter = rateLimit({
 });
 app.use("/api", limiter);
 
-// Helmet for security headers
+app.use(cookieParser());
+
 app.use(helmet());
 
-// Allow inline scripts/styles and allow content from MapTiler CDN
 app.use((req, res, next) => {
   res.setHeader(
     "Content-Security-Policy",
-    "default-src 'self'; script-src 'self' https://cdn.maptiler.com blob:; style-src 'self' 'unsafe-inline' https://cdn.maptiler.com; img-src 'self' data: https://cdn.maptiler.com https://api.maptiler.com; connect-src 'self' https://cdn.maptiler.com https://api.maptiler.com;"
+    "default-src 'self'; script-src 'self' https://cdn.maptiler.com https://cdnjs.cloudflare.com blob:; style-src 'self' 'unsafe-inline' https://cdn.maptiler.com; img-src 'self' data: https://cdn.maptiler.com; connect-src 'self' https://cdn.maptiler.com https://127.0.0.1:3000;"
   );
   next();
 });
@@ -55,6 +56,7 @@ app.use(
 // Add request timestamp
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
+  console.log(req.cookies);
   next();
 });
 

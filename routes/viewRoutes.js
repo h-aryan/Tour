@@ -1,10 +1,12 @@
 const express = require("express");
-const view = require("../controllers/viewController"); // Import the overview controller
+const view = require("../controllers/viewController");
+const authController = require("../controllers/authController");
 
 const router = express.Router();
 
-router.get("/", view.getOverview);
+router.use(authController.isLoggedIn);
 
+router.get("/", view.getOverview);
 router.get("/tour/:id", view.getTour);
 router.get("/login", view.getLoginForm);
 
