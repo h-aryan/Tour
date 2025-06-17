@@ -51,3 +51,10 @@ exports.getLoginForm = (req, res) => {
     message: "Please log in to continue.",
   });
 };
+
+exports.getAccount = (req, res) => {
+  res.status(200).render("account", {
+    title: "Your account",
+    user: req.user,
+  });
+};
