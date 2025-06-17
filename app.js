@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(morgan("dev"));
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
-app.use(express.static(path.join(__dirname, "public"))); // Serve static files from "public"
+app.use(express.static(path.join(__dirname, "public")));
 
 // Rate limiter middleware
 const limiter = rateLimit({
@@ -34,7 +34,7 @@ app.use(helmet());
 app.use((req, res, next) => {
   res.setHeader(
     "Content-Security-Policy",
-    "default-src 'self'; script-src 'self' https://cdn.maptiler.com https://cdnjs.cloudflare.com blob:; style-src 'self' 'unsafe-inline' https://cdn.maptiler.com; img-src 'self' data: https://cdn.maptiler.com; connect-src 'self' https://cdn.maptiler.com https://127.0.0.1:3000;"
+    "default-src 'self'; script-src 'self' https://cdn.maptiler.com https://cdnjs.cloudflare.com blob:; style-src 'self' 'unsafe-inline' https://cdn.maptiler.com; img-src 'self' data: https://cdn.maptiler.com https://api.maptiler.com; connect-src 'self' https://cdn.maptiler.com https://api.maptiler.com ws://127.0.0.1:60149 https://127.0.0.1:3000;"
   );
   next();
 });
