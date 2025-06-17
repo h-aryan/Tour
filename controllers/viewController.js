@@ -44,3 +44,10 @@ exports.getTour = async (req, res) => {
     });
   }
 };
+
+exports.getLoginForm = (req, res) => {
+  res.status(200).render("login", {
+    title: "Login",
+    message: "Please log in to continue.",
+  });
+};

@@ -6,5 +6,6 @@ const router = express.Router();
 router.get("/", view.getOverview);
 
 router.get("/tour/:id", view.getTour);
+router.get("/login", view.getLoginForm);
 
 module.exports = router;
