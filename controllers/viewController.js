@@ -53,6 +53,13 @@ exports.getLoginForm = (req, res) => {
   });
 };
 
+exports.getSignupForm = (req, res) => {
+  res.status(200).render("signup", {
+    title: "Sign up",
+    message: "Create your account.",
+  });
+};
+
 exports.getAccount = (req, res) => {
   console.log("User data:", res.locals.user); // Debugging
   res.status(200).render("account", {
