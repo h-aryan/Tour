@@ -7,6 +7,7 @@ const router = express.Router();
 router.get("/", authController.isLoggedIn, view.getOverview);
 router.get("/tour/:id", authController.isLoggedIn, view.getTour);
 router.get("/login", authController.isLoggedIn, view.getLoginForm);
+router.get("/signup", authController.isLoggedIn, view.getSignupForm);
 router.get("/me", authController.protect, view.getAccount);
 
 router.post("/submit-user-data", authController.protect, view.updateUserData);
