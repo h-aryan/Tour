@@ -35,7 +35,7 @@ app.use(helmet());
 app.use((req, res, next) => {
   res.setHeader(
     "Content-Security-Policy",
-    "default-src 'self'; script-src 'self' https://cdn.maptiler.com https://cdnjs.cloudflare.com blob:; style-src 'self' 'unsafe-inline' https://cdn.maptiler.com; img-src 'self' data: https://cdn.maptiler.com https://api.maptiler.com; connect-src 'self' https://cdn.maptiler.com https://api.maptiler.com ws://127.0.0.1:60149 https://127.0.0.1:3000;"
+    "default-src 'self'; script-src 'self' https://cdn.maptiler.com https://cdnjs.cloudflare.com blob:; style-src 'self' 'unsafe-inline' https://cdn.maptiler.com; img-src 'self' data: https://cdn.maptiler.com https://api.maptiler.com; connect-src 'self' http://127.0.0.1:3000 https://127.0.0.1:3000 https://cdn.maptiler.com https://api.maptiler.com ws://127.0.0.1:60149;"
   );
   next();
 });
